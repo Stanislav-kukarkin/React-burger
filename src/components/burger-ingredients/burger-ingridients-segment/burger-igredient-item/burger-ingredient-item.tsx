@@ -4,7 +4,14 @@ import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useCallback, useEffect, useState } from 'react';
+
+import { useDrag } from 'react-dnd';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/components/services/store';
+import {
+	startDragging,
+	stopDragging,
+} from '@/components/services/slices/drag-slice';
 
 type BurgerIngredientItemProps = {
 	item: TIngredient;
@@ -15,47 +22,38 @@ export const BurgerIngredientItem = ({
 	item,
 	onItemClick,
 }: BurgerIngredientItemProps): React.JSX.Element => {
-	const [isSelected, setIsSelected] = useState(false);
+	const dispatch = useDispatch();
+	const [{ isDragging }, dragRef] = useDrag({
+		type: 'ingredient',
+		item: () => {
+			dispatch(startDragging(item.type));
+			return item;
+		},
+		end: () => {
+			dispatch(stopDragging());
+		},
+		collect: (monitor) => ({
+			isDragging: monitor.isDragging(),
+		}),
+	});
 
-	useEffect(() => {
-		const stored = localStorage.getItem('selectedIngredientIds');
-		const currentIds = stored ? JSON.parse(stored) : [];
-		setIsSelected(currentIds.includes(item._id));
-	}, [item._id]);
-
-	const handleClick = useCallback(() => {
-		const stored = localStorage.getItem('selectedIngredientIds');
-		const currentIds = stored ? JSON.parse(stored) : [];
-
-		const setId = () => {
-			const currentIds = getCurrentIds();
-			currentIds.push(item._id);
-			localStorage.setItem('selectedIngredientIds', JSON.stringify(currentIds));
-			setIsSelected(true);
-		};
-
-		const removeId = () => {
-			const currentIds = getCurrentIds();
-			currentIds.splice(currentIds.indexOf(item._id), 1);
-			localStorage.setItem('selectedIngredientIds', JSON.stringify(currentIds));
-			setIsSelected(false);
-		};
-
-		currentIds.includes(item._id) ? removeId() : setId();
-		window.dispatchEvent(new Event('ingredientListUpdated'));
-
-		onItemClick(item);
-	}, [item._id, onItemClick]);
-
-	const getCurrentIds = () => {
-		const stored = localStorage.getItem('selectedIngredientIds');
-		return stored ? JSON.parse(stored) : [];
+	const handleClick = () => {
+		if (!isDragging) {
+			onItemClick(item); // открывает модалку
+		}
 	};
+
+	const count = useSelector(
+		(state: RootState) =>
+			state.burgerConstructor.ingredients.filter((i) => i._id === item._id)
+				.length
+	);
 
 	return (
 		<div
 			role='button'
 			tabIndex={0}
+			ref={dragRef}
 			className={`${styles.ingredientItem} `}
 			onClick={handleClick}
 			onKeyDown={(e) => {
@@ -65,9 +63,9 @@ export const BurgerIngredientItem = ({
 				}
 			}}>
 			<Counter
-				count={1}
+				count={count}
 				size='default'
-				extraClass={`m-1 ${styles.badge} ${isSelected ? styles.visible : styles.hidden}`}
+				extraClass={`m-1 ${styles.badge} ${count ? styles.visible : styles.hidden}`}
 			/>
 
 			<div className='pl-4 pr-4'>

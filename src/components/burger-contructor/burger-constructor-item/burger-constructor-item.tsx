@@ -1,41 +1,70 @@
 import { TIngredient } from '@/utils/types';
-import style from './burger-constructor-item.module.css';
-import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useCallback, useMemo } from 'react';
+import {
+	ConstructorElement,
+	DragIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
+import { useCallback, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { removeIngredient } from '@/components/services/slices/burger-constructor-slice';
+import { useDrag, useDrop } from 'react-dnd';
+import styles from './burger-constructor-item.module.css';
 
 type BurgerConstructorItemProps = {
 	item: TIngredient;
+	index: number;
+	isLocked?: boolean;
+	moveItem?: (from: number, to: number) => void;
 	type?: 'top' | 'bottom';
-	onDelete: () => void;
 };
 
 export const BurgerConstructorItem = ({
 	item,
 	type,
-	onDelete,
+	index,
+	isLocked,
+	moveItem,
 }: BurgerConstructorItemProps): React.JSX.Element => {
+	const dispatch = useDispatch();
+	const ref = useRef<HTMLDivElement>(null);
+
+	const [, drop] = useDrop({
+		accept: 'main',
+		hover(draggedItem: { index: number }) {
+			if (!ref.current || draggedItem.index === index || !moveItem) return;
+			moveItem(draggedItem.index, index);
+			draggedItem.index = index; // обновить индекс у drag-элемента
+		},
+	});
+
+	const [{ isDragging }, drag] = useDrag({
+		type: 'main',
+		item: { ...item, index },
+		collect: (monitor) => ({
+			isDragging: monitor.isDragging(),
+		}),
+	});
+
+	drag(drop(ref));
+
 	const handleClose = useCallback(() => {
-		const stored = localStorage.getItem('selectedIngredientIds');
-		const currentIds = stored ? JSON.parse(stored) : [];
-
-		currentIds.splice(currentIds.indexOf(item._id), 1);
-		localStorage.setItem('selectedIngredientIds', JSON.stringify(currentIds));
-		onDelete();
-	}, [item._id, onDelete]);
-
-	const randomBool = useMemo(() => {
-		return Math.random() < 0.5;
-	}, []);
+		if (item?.uniqueId) dispatch(removeIngredient(item.uniqueId));
+	}, [dispatch, item?.uniqueId]);
 
 	return (
-		<ConstructorElement
-			type={type}
-			text={item.name}
-			price={item.price}
-			isLocked={randomBool}
-			thumbnail={item.image}
-			handleClose={handleClose}
-			extraClass={style.ingredientItem}
-		/>
+		<div
+			ref={ref}
+			style={{ opacity: isDragging ? 0.5 : 1 }}
+			className={moveItem ? `${styles.constructor_main_item}` : ''}>
+			{moveItem && <DragIcon type='primary' />}
+			<ConstructorElement
+				type={type}
+				text={item?.name}
+				price={item?.price}
+				isLocked={isLocked}
+				thumbnail={item?.image}
+				handleClose={handleClose}
+				extraClass={styles.ingredientItem}
+			/>
+		</div>
 	);
 };

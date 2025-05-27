@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { TIngredient, TIngredientType } from '@utils/types.ts';
 import { TabPanel } from './tab-panel/tab-panel';
 import styles from './burger-ingredients.module.css';
@@ -6,27 +6,55 @@ import { BurgerIngredientsSegment } from './burger-ingridients-segment/burger-in
 import { GroupedIngredients } from '@/interfaces/ingrediensts';
 import { Modal } from '../ui/modal/modal';
 import { IngredientInfo } from './ingredient-info/ingredient-info';
+import { useGetIngredientsQuery } from '../services/api/ingredients-api';
 
-type TBurgerIngredientsProps = {
-	ingredients: TIngredient[];
-};
+// type TBurgerIngredientsProps = {
+// 	ingredients: TIngredient[];
+// };
 
-export const BurgerIngredients = ({
-	ingredients,
-}: TBurgerIngredientsProps): React.JSX.Element => {
+export const BurgerIngredients = (): React.JSX.Element => {
 	const [activeType, setActiveType] = useState<TIngredientType>(
 		TIngredientType.Bun
 	);
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<TIngredient | null>(null);
+	const [isTabClick, setIsTabClick] = useState(false);
 
-	const handleClose = () => setModalOpen(false);
-	const handleShow = (item: TIngredient) => {
-		setSelectedItem(item);
-		setModalOpen(true);
-	};
+	const bunRef = useRef<HTMLDivElement | null>(null);
+	const mainRef = useRef<HTMLDivElement | null>(null);
+	const sauceRef = useRef<HTMLDivElement | null>(null);
+	const containerRef = useRef<HTMLDivElement | null>(null);
+
+	const {
+		data: ingredients,
+		isLoading,
+		isError,
+		error,
+	} = useGetIngredientsQuery();
+
+	useEffect(() => {
+		if (!isTabClick) return;
+
+		const refs: Record<TIngredientType, React.RefObject<HTMLDivElement>> = {
+			bun: bunRef,
+			main: mainRef,
+			sauce: sauceRef,
+		};
+		const ref = refs[activeType];
+		ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+		setIsTabClick(false);
+	}, [activeType]);
 
 	const groupedIngredients: GroupedIngredients = useMemo(() => {
+		if (!ingredients) {
+			return {
+				bun: [],
+				sauce: [],
+				main: [],
+			};
+		}
+
 		return ingredients.reduce<Record<TIngredientType, TIngredient[]>>(
 			(acc, item) => {
 				if (!acc[item.type]) {
@@ -43,26 +71,75 @@ export const BurgerIngredients = ({
 		);
 	}, [ingredients]);
 
+	const handleScroll = () => {
+		const getTop = (
+			item: React.MutableRefObject<HTMLDivElement | null>
+		): number => Math.abs(item.current?.getBoundingClientRect().top ?? 0);
+
+		const containerTop = getTop(containerRef);
+		const sectionDistances: { type: TIngredientType; distance: number }[] = [
+			{ type: TIngredientType.Bun, distance: getTop(bunRef) - containerTop },
+			{ type: TIngredientType.Main, distance: getTop(mainRef) - containerTop },
+			{
+				type: TIngredientType.Sauce,
+				distance: getTop(sauceRef) - containerTop,
+			},
+		];
+
+		const closest = sectionDistances.reduce((prev, curr) =>
+			curr.distance < prev.distance ? curr : prev
+		);
+
+		if (closest.type !== activeType) {
+			setActiveType(closest.type);
+		}
+	};
+
+	const handleClose = () => setModalOpen(false);
+	const handleShow = (item: TIngredient) => {
+		setSelectedItem(item);
+		setModalOpen(true);
+	};
+
+	if (isLoading) return <p>Загрузка ингредиентов...</p>;
+	if (isError) return <p>Ошибка загрузки: {String(error)}</p>;
+	if (!ingredients) return <p>Нет данных</p>;
+
 	return (
 		<>
 			<div className={`${styles.wrapper} pb-10 pt-10`}>
-				<TabPanel activeType={activeType} setActiveType={setActiveType} />
-				<div className={styles.burger_ingredients}>
-					<BurgerIngredientsSegment
-						ingredients={groupedIngredients.bun}
-						title='Булки'
-						onItemClick={handleShow}
-					/>
-					<BurgerIngredientsSegment
-						ingredients={groupedIngredients.main}
-						title='Начинки'
-						onItemClick={handleShow}
-					/>
-					<BurgerIngredientsSegment
-						ingredients={groupedIngredients.sauce}
-						title='Соусы'
-						onItemClick={handleShow}
-					/>
+				<TabPanel
+					activeType={activeType}
+					setActiveType={(type) => {
+						setIsTabClick(true);
+						setActiveType(type);
+					}}
+				/>
+				<div
+					className={styles.burger_ingredients}
+					ref={containerRef}
+					onScroll={handleScroll}>
+					<div ref={bunRef}>
+						<BurgerIngredientsSegment
+							ingredients={groupedIngredients.bun}
+							title='Булки'
+							onItemClick={handleShow}
+						/>
+					</div>
+					<div ref={mainRef}>
+						<BurgerIngredientsSegment
+							ingredients={groupedIngredients.main}
+							title='Начинки'
+							onItemClick={handleShow}
+						/>
+					</div>
+					<div ref={sauceRef}>
+						<BurgerIngredientsSegment
+							ingredients={groupedIngredients.sauce}
+							title='Соусы'
+							onItemClick={handleShow}
+						/>
+					</div>
 				</div>
 			</div>
 			{selectedItem && (

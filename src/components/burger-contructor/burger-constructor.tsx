@@ -1,69 +1,121 @@
-import { TIngredient } from '@utils/types.ts';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import styles from './burger-constructor.module.css';
-import { BurgerConstructorItem } from './burger-constructor-item/burger-constructor-item';
 import { BurgerConstructorFooter } from './burger-constructor-footer/burger-constructor-footer';
-import { DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../services/store';
+import { useDrop } from 'react-dnd';
+import {
+	addIngredient,
+	moveIngredient,
+	setBun,
+} from '../services/slices/burger-constructor-slice';
+import { BurgerConstructorItem } from './burger-constructor-item/burger-constructor-item';
+import { v4 as uuid } from 'uuid';
+import { TIngredient } from '@/utils/types';
 
-type TBurgerConstructorProps = {
-	ingredients: TIngredient[];
-};
-
-export const BurgerConstructor = ({
-	ingredients,
-}: TBurgerConstructorProps): React.JSX.Element => {
-	const [selectedIngredients, setSelectedIngredients] = useState<TIngredient[]>(
-		[]
+export const BurgerConstructor = (): React.JSX.Element => {
+	const dispatch = useDispatch();
+	const { bun, ingredients } = useSelector(
+		(state: RootState) => state.burgerConstructor
+	);
+	const { isDragging, type } = useSelector(
+		(state: RootState) => state.dragSlice
 	);
 
-	const refreshIngredientsFromStorage = useCallback(() => {
-		const data = localStorage.getItem('selectedIngredientIds');
-		if (data) {
-			const getIngredientsById = (id: string) => {
-				return ingredients.find((item) => item._id === id);
-			};
-			setSelectedIngredients(JSON.parse(data).map(getIngredientsById) || []);
-		}
-	}, [ingredients]);
+	const [, dropMiddle] = useDrop({
+		accept: 'ingredient',
+		canDrop: (item: TIngredient) => item.type !== 'bun',
+		drop: (item: TIngredient) => {
+			dispatch(addIngredient({ ...item, uniqueId: uuid() }));
+		},
+	});
 
-	useEffect(() => {
-		refreshIngredientsFromStorage();
+	const [, dropBunTop] = useDrop({
+		accept: 'ingredient',
+		canDrop: (item: TIngredient) => item.type === 'bun',
+		drop: (item: TIngredient) => {
+			dispatch(setBun(item));
+		},
+	});
 
-		const listener = () => refreshIngredientsFromStorage();
+	const [, dropBunBottom] = useDrop({
+		accept: 'ingredient',
+		canDrop: (item: TIngredient) => item.type === 'bun',
+		drop: (item: TIngredient) => {
+			dispatch(setBun(item));
+		},
+	});
 
-		window.addEventListener('ingredientListUpdated', listener);
+	const moveItem = (from: number, to: number) => {
+		dispatch(moveIngredient({ fromIndex: from, toIndex: to }));
+	};
 
-		return () => {
-			window.removeEventListener('ingredientListUpdated', listener);
-		};
-	}, [refreshIngredientsFromStorage]);
+	const isBunDragging = isDragging && type === 'bun';
+	const isMainDragging = isDragging && type !== 'bun';
+
+	if (!ingredients) return <p>Нет данных</p>;
 
 	return (
 		<section className={`${styles.burger_constructor} mt-25`}>
 			<ul className={`${styles.burger_constructor_list} pl-4 pr-4`}>
-				{selectedIngredients.map((item, index) => {
-					const isFirst = index === 0;
-					const isLast = index === selectedIngredients.length - 1;
+				<li
+					ref={dropBunTop}
+					className={`${styles.constructor_bun_item} ${isBunDragging ? styles.dropzone_active : ''} pl-8`}>
+					{bun ? (
+						<BurgerConstructorItem
+							type='top'
+							item={bun}
+							isLocked={true}
+							index={0}
+						/>
+					) : (
+						<>
+							<div className={`${styles.empty} `}>Перетащите булку</div>
+						</>
+					)}
+				</li>
 
-					return (
-						<li key={item._id} className={styles.burger_constructor_item}>
-							{isFirst || isLast ? <div /> : <DragIcon type='primary' />}
-							<BurgerConstructorItem
-								item={item}
-								type={isFirst ? 'top' : isLast ? 'bottom' : undefined}
-								onDelete={refreshIngredientsFromStorage}
-							/>
-						</li>
-					);
-				})}
+				<li
+					ref={dropMiddle}
+					className={`${styles.burger_main_list} ${isMainDragging ? styles.dropzone_active : ''} ${ingredients.length ? '' : 'pl-8'}`}>
+					{ingredients.length ? (
+						ingredients.map((item, i) => (
+							<div key={item.uniqueId}>
+								<BurgerConstructorItem
+									item={item}
+									index={i}
+									moveItem={moveItem}
+								/>
+							</div>
+						))
+					) : (
+						<>
+							<div className={`${styles.empty} `}>
+								Перетащите начинки и соусы
+							</div>
+						</>
+					)}
+				</li>
+
+				<li
+					ref={dropBunBottom}
+					className={`${styles.constructor_bun_item} ${isBunDragging ? styles.dropzone_active : ''} pl-8`}>
+					{bun ? (
+						<BurgerConstructorItem
+							type='bottom'
+							item={bun}
+							isLocked={true}
+							index={0}
+						/>
+					) : (
+						<>
+							<div className={`${styles.empty} `}>Перетащите булку</div>
+						</>
+					)}
+				</li>
 			</ul>
 
-			<BurgerConstructorFooter
-				finalPrice={selectedIngredients.reduce(
-					(sum, item) => sum + item.price,
-					0
-				)}
-			/>
+			<BurgerConstructorFooter />
 		</section>
 	);
 };

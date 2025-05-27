@@ -11,10 +11,8 @@ import { useCreateOrderMutation } from '@/components/services/api/ingredients-ap
 import { clearIngredients } from '@/components/services/slices/burger-constructor-slice';
 import { setOrder } from '@/components/services/slices/order-slice';
 
-const incrementOrderCode = (code: string): string => {
-	const num = parseInt(code, 10);
-	const nextNum = num + 1;
-	return nextNum.toString().padStart(6, '0');
+const parseCode = (code: number): string => {
+	return code.toString().padStart(6, '0');
 };
 
 export const BurgerConstructorFooter = (): React.JSX.Element => {
@@ -32,11 +30,11 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 		if (!bun || ingredients.length === 0) return;
 
 		try {
-			await createOrder({
+			const response = await createOrder({
 				ingredients: [bun._id, ...ingredients.map((item) => item._id), bun._id],
 			}).unwrap();
 
-			const nextCode = incrementOrderCode(orderCode);
+			const nextCode = parseCode(response.order.number);
 			setOrderCode(nextCode);
 
 			dispatch(setOrder({ ingredients, number: nextCode }));

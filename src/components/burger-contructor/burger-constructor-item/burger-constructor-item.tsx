@@ -1,4 +1,4 @@
-import { TIngredient } from '@/utils/types';
+import { TIngredient, TIngredientType } from '@/utils/types';
 import {
 	ConstructorElement,
 	DragIcon,
@@ -28,7 +28,7 @@ export const BurgerConstructorItem = ({
 	const ref = useRef<HTMLDivElement>(null);
 
 	const [, drop] = useDrop({
-		accept: 'main',
+		accept: TIngredientType.Main || TIngredientType.Sauce,
 		hover(draggedItem: { index: number }) {
 			if (!ref.current || draggedItem.index === index || !moveItem) return;
 			moveItem(draggedItem.index, index);
@@ -37,7 +37,7 @@ export const BurgerConstructorItem = ({
 	});
 
 	const [{ isDragging }, drag] = useDrag({
-		type: 'main',
+		type: TIngredientType.Main,
 		item: { ...item, index },
 		collect: (monitor) => ({
 			isDragging: monitor.isDragging(),

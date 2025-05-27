@@ -17,19 +17,19 @@ export const TabPanel = ({
 			<nav>
 				<ul className={styles.menu}>
 					<Tab
-						value='bun'
+						value={TIngredientType.Bun}
 						active={activeType === TIngredientType.Bun}
 						onClick={() => setActiveType(TIngredientType.Bun)}>
 						Булки
 					</Tab>
 					<Tab
-						value='main'
+						value={TIngredientType.Main}
 						active={activeType === TIngredientType.Main}
 						onClick={() => setActiveType(TIngredientType.Main)}>
 						Начинки
 					</Tab>
 					<Tab
-						value='sauce'
+						value={TIngredientType.Sauce}
 						active={activeType === TIngredientType.Sauce}
 						onClick={() => setActiveType(TIngredientType.Sauce)}>
 						Соусы

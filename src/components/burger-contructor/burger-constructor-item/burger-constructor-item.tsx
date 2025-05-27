@@ -32,7 +32,7 @@ export const BurgerConstructorItem = ({
 		hover(draggedItem: { index: number }) {
 			if (!ref.current || draggedItem.index === index || !moveItem) return;
 			moveItem(draggedItem.index, index);
-			draggedItem.index = index; // обновить индекс у drag-элемента
+			draggedItem.index = index;
 		},
 	});
 

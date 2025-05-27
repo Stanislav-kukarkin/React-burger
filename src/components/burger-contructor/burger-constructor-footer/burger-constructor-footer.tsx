@@ -11,6 +11,12 @@ import { useCreateOrderMutation } from '@/components/services/api/ingredients-ap
 import { clearIngredients } from '@/components/services/slices/burger-constructor-slice';
 import { setOrder } from '@/components/services/slices/order-slice';
 
+const incrementOrderCode = (code: string): string => {
+	const num = parseInt(code, 10);
+	const nextNum = num + 1;
+	return nextNum.toString().padStart(6, '0');
+};
+
 export const BurgerConstructorFooter = (): React.JSX.Element => {
 	const dispatch = useDispatch();
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -22,13 +28,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 	const handleClose = () => setModalOpen(false);
 	const [createOrder, { isLoading }] = useCreateOrderMutation();
 
-	const incrementOrderCode = (code: string): string => {
-		const num = parseInt(code, 10);
-		const nextNum = num + 1;
-		return nextNum.toString().padStart(6, '0');
-	};
-
-	const handleShow = useCallback(async () => {
+	const handleShowOrderModal = useCallback(async () => {
 		if (!bun || ingredients.length === 0) return;
 
 		try {
@@ -44,7 +44,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 
 			setModalOpen(true);
 		} catch (error) {
-			console.error(error);
+			console.error('Не удалось оформить заказ. Попробуйте позже.');
 		}
 	}, [bun, ingredients, createOrder]);
 
@@ -66,7 +66,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 					htmlType='button'
 					type='primary'
 					size='large'
-					onClick={handleShow}
+					onClick={handleShowOrderModal}
 					disabled={isLoading || !bun || ingredients.length === 0}>
 					{isLoading ? 'Подождите...' : 'Оформить заказ'}
 				</Button>
@@ -74,7 +74,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 			<OrderModal
 				isOpen={isModalOpen}
 				onClose={handleClose}
-				generateRandomSixDigit={orderCode}
+				orderCode={orderCode}
 			/>
 		</>
 	);

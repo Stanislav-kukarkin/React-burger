@@ -8,10 +8,6 @@ import { Modal } from '../ui/modal/modal';
 import { IngredientInfo } from './ingredient-info/ingredient-info';
 import { useGetIngredientsQuery } from '../services/api/ingredients-api';
 
-// type TBurgerIngredientsProps = {
-// 	ingredients: TIngredient[];
-// };
-
 export const BurgerIngredients = (): React.JSX.Element => {
 	const [activeType, setActiveType] = useState<TIngredientType>(
 		TIngredientType.Bun
@@ -36,9 +32,9 @@ export const BurgerIngredients = (): React.JSX.Element => {
 		if (!isTabClick) return;
 
 		const refs: Record<TIngredientType, React.RefObject<HTMLDivElement>> = {
-			bun: bunRef,
-			main: mainRef,
-			sauce: sauceRef,
+			[TIngredientType.Bun]: bunRef,
+			[TIngredientType.Main]: mainRef,
+			[TIngredientType.Sauce]: sauceRef,
 		};
 		const ref = refs[activeType];
 		ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -49,9 +45,9 @@ export const BurgerIngredients = (): React.JSX.Element => {
 	const groupedIngredients: GroupedIngredients = useMemo(() => {
 		if (!ingredients) {
 			return {
-				bun: [],
-				sauce: [],
-				main: [],
+				[TIngredientType.Bun]: [],
+				[TIngredientType.Sauce]: [],
+				[TIngredientType.Main]: [],
 			};
 		}
 
@@ -64,9 +60,9 @@ export const BurgerIngredients = (): React.JSX.Element => {
 				return acc;
 			},
 			{
-				bun: [],
-				sauce: [],
-				main: [],
+				[TIngredientType.Bun]: [],
+				[TIngredientType.Sauce]: [],
+				[TIngredientType.Main]: [],
 			}
 		);
 	}, [ingredients]);
@@ -121,21 +117,21 @@ export const BurgerIngredients = (): React.JSX.Element => {
 					onScroll={handleScroll}>
 					<div ref={bunRef}>
 						<BurgerIngredientsSegment
-							ingredients={groupedIngredients.bun}
+							ingredients={groupedIngredients[TIngredientType.Bun]}
 							title='Булки'
 							onItemClick={handleShow}
 						/>
 					</div>
 					<div ref={mainRef}>
 						<BurgerIngredientsSegment
-							ingredients={groupedIngredients.main}
+							ingredients={groupedIngredients[TIngredientType.Main]}
 							title='Начинки'
 							onItemClick={handleShow}
 						/>
 					</div>
 					<div ref={sauceRef}>
 						<BurgerIngredientsSegment
-							ingredients={groupedIngredients.sauce}
+							ingredients={groupedIngredients[TIngredientType.Sauce]}
 							title='Соусы'
 							onItemClick={handleShow}
 						/>

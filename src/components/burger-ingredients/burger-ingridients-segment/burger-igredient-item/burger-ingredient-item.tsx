@@ -39,7 +39,7 @@ export const BurgerIngredientItem = ({
 
 	const handleClick = () => {
 		if (!isDragging) {
-			onItemClick(item); // открывает модалку
+			onItemClick(item);
 		}
 	};
 

@@ -3,13 +3,13 @@ import React from 'react';
 import styles from './order-modal.module.css';
 
 type Props = {
-	generateRandomSixDigit: string;
+	orderCode: string;
 	isOpen: boolean;
 	onClose: () => void;
 };
 
 export const OrderModal = ({
-	generateRandomSixDigit,
+	orderCode,
 	isOpen,
 	onClose,
 }: Props): React.JSX.Element => {
@@ -19,7 +19,7 @@ export const OrderModal = ({
 				<div className={styles.content}>
 					<p
 						className={`${styles.order} text text_type_digits-large mt-4 mb-8`}>
-						{generateRandomSixDigit}
+						{orderCode}
 					</p>
 					<p className={`${styles.identeficator} mb-15`}>
 						идентификатор заказа

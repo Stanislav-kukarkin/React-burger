@@ -1,25 +1,25 @@
 import { Modal } from '@/components/ui/modal/modal';
-import React, { useMemo } from 'react';
+import React from 'react';
 import styles from './order-modal.module.css';
 
 type Props = {
+	orderCode: string;
 	isOpen: boolean;
 	onClose: () => void;
 };
 
-export const OrderModal = ({ isOpen, onClose }: Props): React.JSX.Element => {
-	const generateRandomSixDigit = useMemo(() => {
-		const num = Math.floor(Math.random() * 1000000);
-		return num.toString().padStart(6, '0');
-	}, []);
-
+export const OrderModal = ({
+	orderCode,
+	isOpen,
+	onClose,
+}: Props): React.JSX.Element => {
 	return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<div className={styles.content}>
 					<p
 						className={`${styles.order} text text_type_digits-large mt-4 mb-8`}>
-						{generateRandomSixDigit}
+						{orderCode}
 					</p>
 					<p className={`${styles.identeficator} mb-15`}>
 						идентификатор заказа

@@ -17,9 +17,36 @@
 	overflow: auto;
 }
 
-.burger_constructor_item {
-	display: grid;
-	grid-template-columns: 24px 1fr;
+.constructor_bun_item {
+	display: flex;
 	align-items: center;
-	gap: 8px;
+}
+
+.burger_main_list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.empty {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 536px;
+	min-height: 80px;
+	padding: 16px 24px;
+	color: #f2f2f3;
+	line-height: 1.5;
+	background: var(--background-element);
+	border-radius: var(--common-border-radius-s);
+}
+
+li::marker {
+	content: '';
+}
+
+.dropzone_active {
+	border: 2px dashed purple;
 }

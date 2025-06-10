@@ -80,7 +80,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 							index={0}
 						/>
 					) : (
-						<div className={`${styles.empty} `}>Перетащите булку</div>
+						<div className={`${styles.empty} `}>Перетащите булку (вверх)</div>
 					)}
 				</li>
 
@@ -113,7 +113,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 							index={0}
 						/>
 					) : (
-						<div className={`${styles.empty} `}>Перетащите булку</div>
+						<div className={`${styles.empty} `}>Перетащите булку (низ)</div>
 					)}
 				</li>
 			</ul>

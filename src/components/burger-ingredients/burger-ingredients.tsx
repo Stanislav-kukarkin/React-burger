@@ -7,8 +7,8 @@ import {
 import { TabPanel } from './tab-panel/tab-panel';
 import styles from './burger-ingredients.module.css';
 import { BurgerIngredientsSegment } from './burger-ingridients-segment/burger-ingredients-segment';
-import { useGetIngredientsQuery } from '../../services/api/ingredients-api';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useGetIngredientsQuery } from '@/services/api/ingredients-api';
 
 export const BurgerIngredients = (): React.JSX.Element => {
 	const [activeType, setActiveType] = useState<TIngredientType>(

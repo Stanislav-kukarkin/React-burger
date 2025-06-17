@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
-import { Preloader } from '../ui/preloader/preloader';
 import { getAccessToken } from '@/utils/token-utils';
 import { useEffect, useState } from 'react';
+import { Preloader } from '../ui/preloader/preloader';
 
 type ProtectedRouteProps = {
 	children: React.ReactElement;

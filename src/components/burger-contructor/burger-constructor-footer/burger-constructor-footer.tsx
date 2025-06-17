@@ -6,12 +6,12 @@ import {
 import { useCallback, useMemo, useState } from 'react';
 import { OrderModal } from '../order-modal/order-modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../services/store';
 import { useCreateOrderMutation } from '@/services/api/ingredients-api';
 import { clearIngredients } from '@/services/slices/burger-constructor-slice';
 import { setOrder } from '@/services/slices/order-slice';
 import { getAccessToken } from '@/utils/token-utils';
 import { useNavigate } from 'react-router-dom';
+import { RootState } from '@/services/store';
 
 const parseCode = (code: number): string => {
 	return code.toString().padStart(6, '0');

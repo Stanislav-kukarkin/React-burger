@@ -19,3 +19,23 @@ export enum TIngredientType {
 	Main = 'main',
 	Sauce = 'sauce',
 }
+
+export interface TOrderRequest {
+	ingredients: string[];
+}
+
+export interface TOrderResponse {
+	name: string;
+	order: {
+		number: number;
+	};
+	success: boolean;
+}
+
+export type GroupedIngredients = {
+	bun: TIngredient[];
+	sauce: TIngredient[];
+	main: TIngredient[];
+};
+
+export type IngredientCategory = keyof GroupedIngredients;

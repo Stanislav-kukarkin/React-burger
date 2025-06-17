@@ -1,19 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { TIngredient, TIngredientType } from '@utils/types.ts';
+import {
+	GroupedIngredients,
+	TIngredient,
+	TIngredientType,
+} from '@/interfaces/ingredients';
 import { TabPanel } from './tab-panel/tab-panel';
 import styles from './burger-ingredients.module.css';
 import { BurgerIngredientsSegment } from './burger-ingridients-segment/burger-ingredients-segment';
-import { GroupedIngredients } from '@/interfaces/ingrediensts';
-import { Modal } from '../ui/modal/modal';
-import { IngredientInfo } from './ingredient-info/ingredient-info';
-import { useGetIngredientsQuery } from '../services/api/ingredients-api';
+import { useGetIngredientsQuery } from '../../services/api/ingredients-api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const BurgerIngredients = (): React.JSX.Element => {
 	const [activeType, setActiveType] = useState<TIngredientType>(
 		TIngredientType.Bun
 	);
-	const [isModalOpen, setModalOpen] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<TIngredient | null>(null);
 	const [isTabClick, setIsTabClick] = useState(false);
 
 	const bunRef = useRef<HTMLDivElement | null>(null);
@@ -28,6 +28,9 @@ export const BurgerIngredients = (): React.JSX.Element => {
 		error,
 	} = useGetIngredientsQuery();
 
+	const navigate = useNavigate();
+	const location = useLocation();
+
 	useEffect(() => {
 		if (!isTabClick) return;
 
@@ -40,7 +43,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
 		ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
 		setIsTabClick(false);
-	}, [activeType]);
+	}, [activeType, isTabClick]);
 
 	const groupedIngredients: GroupedIngredients = useMemo(() => {
 		if (!ingredients) {
@@ -91,10 +94,10 @@ export const BurgerIngredients = (): React.JSX.Element => {
 		}
 	};
 
-	const handleClose = () => setModalOpen(false);
 	const handleShow = (item: TIngredient) => {
-		setSelectedItem(item);
-		setModalOpen(true);
+		navigate(`/ingredients/${item._id}`, {
+			state: { backgroundLocation: location },
+		});
 	};
 
 	if (isLoading) return <p>Загрузка ингредиентов...</p>;
@@ -138,14 +141,6 @@ export const BurgerIngredients = (): React.JSX.Element => {
 					</div>
 				</div>
 			</div>
-			{selectedItem && (
-				<Modal
-					header={<h3 className={styles.modal_header}>Детали ингредиента</h3>}
-					isOpen={isModalOpen}
-					onClose={handleClose}>
-					<IngredientInfo item={selectedItem} />
-				</Modal>
-			)}
 		</>
 	);
 };

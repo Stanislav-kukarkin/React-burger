@@ -1,4 +1,4 @@
-import { TIngredientType } from '@/utils/types';
+import { TIngredientType } from '@/interfaces/ingredients';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface DragState {

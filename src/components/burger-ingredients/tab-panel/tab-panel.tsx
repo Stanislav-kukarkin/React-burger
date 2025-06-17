@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './tab-panel.module.css';
-import { TIngredientType } from '@utils/types.ts';
+import { TIngredientType } from '@/interfaces/ingredients';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 
 type TabPanelProps = {

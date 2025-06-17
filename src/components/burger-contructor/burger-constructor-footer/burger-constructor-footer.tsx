@@ -6,10 +6,12 @@ import {
 import { useCallback, useMemo, useState } from 'react';
 import { OrderModal } from '../order-modal/order-modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
-import { useCreateOrderMutation } from '@/components/services/api/ingredients-api';
-import { clearIngredients } from '@/components/services/slices/burger-constructor-slice';
-import { setOrder } from '@/components/services/slices/order-slice';
+import { RootState } from '../../../services/store';
+import { useCreateOrderMutation } from '@/services/api/ingredients-api';
+import { clearIngredients } from '@/services/slices/burger-constructor-slice';
+import { setOrder } from '@/services/slices/order-slice';
+import { getAccessToken } from '@/utils/token-utils';
+import { useNavigate } from 'react-router-dom';
 
 const parseCode = (code: number): string => {
 	return code.toString().padStart(6, '0');
@@ -18,16 +20,25 @@ const parseCode = (code: number): string => {
 export const BurgerConstructorFooter = (): React.JSX.Element => {
 	const dispatch = useDispatch();
 	const [isModalOpen, setModalOpen] = useState(false);
-	const [orderCode, setOrderCode] = useState<string>('000000');
+	const [orderCode, setOrderCode] = useState<string | null>(null);
 	const { bun, ingredients } = useSelector(
 		(state: RootState) => state.burgerConstructor
 	);
 
-	const handleClose = () => setModalOpen(false);
+	const navigate = useNavigate();
+
 	const [createOrder, { isLoading }] = useCreateOrderMutation();
 
 	const handleShowOrderModal = useCallback(async () => {
 		if (!bun || ingredients.length === 0) return;
+
+		if (!getAccessToken()) {
+			navigate('/login');
+			return;
+		}
+
+		setOrderCode(null);
+		setModalOpen(true);
 
 		try {
 			const response = await createOrder({
@@ -39,12 +50,10 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 
 			dispatch(setOrder({ ingredients, number: nextCode }));
 			dispatch(clearIngredients());
-
-			setModalOpen(true);
 		} catch (error) {
 			console.error('Не удалось оформить заказ. Попробуйте позже.');
 		}
-	}, [bun, ingredients, createOrder]);
+	}, [bun, ingredients, createOrder, navigate]);
 
 	const finalPrice = useMemo(() => {
 		return [...(bun ? [bun, bun] : []), ...ingredients].reduce(
@@ -71,7 +80,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 			</div>
 			<OrderModal
 				isOpen={isModalOpen}
-				onClose={handleClose}
+				onClose={() => setModalOpen(false)}
 				orderCode={orderCode}
 			/>
 		</>

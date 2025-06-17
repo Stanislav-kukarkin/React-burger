@@ -1,12 +1,14 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { TIngredient } from '@/utils/types';
-import { TOrderRequest, TOrderResponse } from '../interfaces/api-interface';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import {
+	TIngredient,
+	TOrderRequest,
+	TOrderResponse,
+} from '@/interfaces/ingredients';
+import { baseQueryWithReauth } from '@/utils/base-query-with-reauth';
 
 export const ingredientsApi = createApi({
 	reducerPath: 'ingredientsApi',
-	baseQuery: fetchBaseQuery({
-		baseUrl: 'https://norma.nomoreparties.space/api/',
-	}),
+	baseQuery: baseQueryWithReauth,
 	endpoints: (builder) => ({
 		getIngredients: builder.query<TIngredient[], void>({
 			query: () => 'ingredients',

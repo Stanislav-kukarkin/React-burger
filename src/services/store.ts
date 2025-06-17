@@ -4,10 +4,15 @@ import { burgerConstructorSlice } from './slices/burger-constructor-slice';
 import { ingredientModalSlice } from './slices/ingredient-modal-slice';
 import { orderSlice } from './slices/order-slice';
 import { dragSlice } from './slices/drag-slice';
+import { authApi } from './api/auth-api';
+import { userApi } from './api/user-api';
 
 export const store = configureStore({
 	reducer: {
 		[ingredientsApi.reducerPath]: ingredientsApi.reducer,
+		[authApi.reducerPath]: authApi.reducer,
+		[userApi.reducerPath]: userApi.reducer,
+
 		burgerConstructor: burgerConstructorSlice.reducer,
 		ingredientModal: ingredientModalSlice.reducer,
 		order: orderSlice.reducer,
@@ -15,7 +20,12 @@ export const store = configureStore({
 	},
 
 	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(ingredientsApi.middleware),
+		getDefaultMiddleware().concat(
+			ingredientsApi.middleware,
+			authApi.middleware,
+			userApi.middleware
+		),
+
 	devTools: true,
 });
 

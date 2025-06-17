@@ -28,6 +28,7 @@
 			"@components/*": ["src/components/*"],
 			"@services/*": ["src/services/*"],
 			"@utils/*": ["src/utils/*"],
+			"@interfaces/*": ["src/interfaces/*"],
 			"@pages/*": ["src/pages/*"],
 			"@hooks/*": ["src/components/hooks/*"]
 		}

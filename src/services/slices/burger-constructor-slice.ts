@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TIngredient } from '@/utils/types';
+import { TIngredient } from '@/interfaces/ingredients';
 
 interface ConstructorState {
 	bun: TIngredient | null;

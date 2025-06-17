@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './ingredient-info.module.css';
-import { TIngredient } from '@/utils/types';
+import { TIngredient } from '@/interfaces/ingredients';
+import { useParams } from 'react-router-dom';
+import { useGetIngredientsQuery } from '@/services/api/ingredients-api';
 
-type Props = {
-	item: TIngredient;
-};
+export const IngredientInfo = ({
+	isPage,
+}: {
+	isPage?: boolean;
+}): React.JSX.Element => {
+	const params = useParams();
+	const { data: ingredients } = useGetIngredientsQuery();
 
-export const IngredientInfo = ({ item }: Props): React.JSX.Element => {
+	const item = useMemo(() => {
+		return ingredients?.find(
+			(ingredient: TIngredient) => ingredient._id === params.id
+		);
+	}, [params.id, ingredients]);
+
+	if (!item) {
+		return <p className={styles.empty}>Ингредиент не найден</p>;
+	}
+
 	return (
 		<>
+			{isPage && <h3 className={styles.header}>Детали ингредиента</h3>}
 			<div className={styles.content}>
 				<img
 					src={item.image}

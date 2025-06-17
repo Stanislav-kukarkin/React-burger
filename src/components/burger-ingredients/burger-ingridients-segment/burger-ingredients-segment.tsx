@@ -1,5 +1,5 @@
 import React from 'react';
-import { TIngredient } from '@utils/types.ts';
+import { TIngredient } from '@/interfaces/ingredients';
 import styles from './burger-ingredients-segment.module.css';
 import { BurgerIngredientItem } from './burger-igredient-item/burger-ingredient-item';
 

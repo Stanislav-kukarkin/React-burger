@@ -9,13 +9,6 @@
 	overflow: auto;
 }
 
-.modal_header {
-	margin: 0;
-	font-weight: 700;
-	font-size: 36px;
-	line-height: 1.1;
-}
-
 .burger_ingredient {
 	width: 100%;
 }

@@ -1,0 +1,35 @@
+.container,
+.form,
+.footer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.header {
+	margin: 0;
+	font-weight: 700;
+	font-size: 24px;
+}
+
+.container {
+	gap: 80px;
+	height: 100%;
+}
+
+.form {
+	gap: 24px;
+}
+
+.footer {
+	gap: 16px;
+}
+
+.footer_item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--text-inactive-color);
+}

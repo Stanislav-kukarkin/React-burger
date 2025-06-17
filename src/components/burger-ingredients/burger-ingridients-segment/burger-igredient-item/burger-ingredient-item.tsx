@@ -1,4 +1,4 @@
-import { TIngredient } from '@/utils/types';
+import { TIngredient } from '@/interfaces/ingredients';
 import styles from './burger-ingredient-item.module.css';
 import {
 	Counter,
@@ -7,11 +7,8 @@ import {
 
 import { useDrag } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/components/services/store';
-import {
-	startDragging,
-	stopDragging,
-} from '@/components/services/slices/drag-slice';
+import { RootState } from '@/services/store';
+import { startDragging, stopDragging } from '@/services/slices/drag-slice';
 
 type BurgerIngredientItemProps = {
 	item: TIngredient;

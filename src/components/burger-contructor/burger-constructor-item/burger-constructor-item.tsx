@@ -1,11 +1,11 @@
-import { TIngredient, TIngredientType } from '@/utils/types';
+import { TIngredient, TIngredientType } from '@/interfaces/ingredients';
 import {
 	ConstructorElement,
 	DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useCallback, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { removeIngredient } from '@/components/services/slices/burger-constructor-slice';
+import { removeIngredient } from '@/services/slices/burger-constructor-slice';
 import { useDrag, useDrop } from 'react-dnd';
 import styles from './burger-constructor-item.module.css';
 

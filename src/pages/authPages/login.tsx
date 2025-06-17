@@ -6,10 +6,15 @@ import styles from './authPages.module.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '@/services/api/auth-api';
+import { useForm } from '@/hooks/useForm';
+import { ILoginRequest } from '@/interfaces/auth';
 
 export function LoginPage() {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const { values, handleChange } = useForm<ILoginRequest>({
+		email: '',
+		password: '',
+	});
+
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const navigate = useNavigate();
@@ -42,7 +47,7 @@ export function LoginPage() {
 		if (isLoading) {
 			return;
 		}
-		await login({ email, password });
+		await login(values);
 	};
 
 	return (
@@ -51,17 +56,19 @@ export function LoginPage() {
 				<h3 className={styles.header}>Вход</h3>
 				<Input
 					type='text'
+					name='email'
 					placeholder='E-mail'
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
+					value={values.email}
+					onChange={handleChange}
 				/>
 				<Input
 					type={isPasswordVisible ? 'text' : 'password'}
 					placeholder='Пароль'
-					value={password}
+					name='password'
+					value={values.password}
 					icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
 					onIconClick={onIconClick}
-					onChange={(e) => setPassword(e.target.value)}
+					onChange={handleChange}
 				/>
 
 				<Button htmlType='submit' type='primary' size='large'>

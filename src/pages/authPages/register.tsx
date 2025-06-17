@@ -6,11 +6,16 @@ import styles from './authPages.module.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '@/services/api/auth-api';
+import { useForm } from '@/hooks/useForm';
+import { IRegisterRequest } from '@/interfaces/auth';
 
 export function RegisterPage() {
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const { values, handleChange } = useForm<IRegisterRequest>({
+		email: '',
+		password: '',
+		name: '',
+	});
+
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
 	const navigate = useNavigate();
@@ -40,7 +45,7 @@ export function RegisterPage() {
 		if (isLoading) {
 			return;
 		}
-		await register({ name, email, password });
+		await register(values);
 	};
 
 	return (
@@ -49,24 +54,27 @@ export function RegisterPage() {
 				<h3 className={styles.header}>Регистрация</h3>
 
 				<Input
+					name='name'
 					type='text'
 					placeholder='Имя'
-					value={name}
-					onChange={(e) => setName(e.target.value)}
+					value={values.name}
+					onChange={handleChange}
 				/>
 				<Input
+					name='email'
 					type='text'
 					placeholder='E-mail'
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
+					value={values.email}
+					onChange={handleChange}
 				/>
 				<Input
+					name='password'
 					type={isPasswordVisible ? 'text' : 'password'}
 					placeholder='Пароль'
-					value={password}
+					value={values.password}
 					icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
 					onIconClick={onIconClick}
-					onChange={(e) => setPassword(e.target.value)}
+					onChange={handleChange}
 				/>
 
 				<Button htmlType='submit' type='primary' size='medium'>

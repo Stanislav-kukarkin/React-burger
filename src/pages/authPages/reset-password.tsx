@@ -6,10 +6,16 @@ import styles from './authPages.module.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useResetPasswordMutation } from '@/services/api/auth-api';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from '@/hooks/useForm';
+import { IResetPasswordConfirmRequest } from '@/interfaces/auth';
 
 export function ResetPasswordPage() {
-	const [password, setPassword] = useState('');
-	const [token, setToken] = useState('');
+	const { values, handleChange } = useForm<IResetPasswordConfirmRequest>({
+		token: '',
+		password: '',
+	});
+	// const [password, setPassword] = useState('');
+	// const [token, setToken] = useState('');
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [resetPassword, { isSuccess, isLoading, isError }] =
@@ -43,7 +49,7 @@ export function ResetPasswordPage() {
 		if (isLoading) {
 			return;
 		}
-		await resetPassword({ password, token });
+		await resetPassword(values);
 	};
 
 	return (
@@ -51,18 +57,20 @@ export function ResetPasswordPage() {
 			<form className={styles.form} onSubmit={handleSubmit}>
 				<h3 className={styles.header}>Восстановление пароля</h3>
 				<Input
-					value={password}
+					name='password'
+					value={values.password}
 					type={isPasswordVisible ? 'text' : 'password'}
 					placeholder='Введите новый пароль'
 					icon={isPasswordVisible ? 'HideIcon' : 'ShowIcon'}
 					onIconClick={onIconClick}
-					onChange={(e) => setPassword(e.target.value)}
+					onChange={handleChange}
 				/>
 				<Input
+					name='token'
 					type='text'
 					placeholder='Введите код из письма'
-					value={token}
-					onChange={(e) => setToken(e.target.value)}
+					value={values.token}
+					onChange={handleChange}
 				/>
 
 				<Button htmlType='submit' type='primary' size='medium'>

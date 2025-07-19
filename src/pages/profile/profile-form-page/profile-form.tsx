@@ -10,6 +10,7 @@ import {
 	useUpdateUserMutation,
 } from '@/services/api/user-api';
 import { EditableInput } from '@/components/ui/editable-input/editeble-input';
+import { Preloader } from '@/components/ui/preloader/preloader';
 
 export const ProfileFormPage = () => {
 	const [isDirty, setIsDirty] = useState(false);
@@ -49,7 +50,7 @@ export const ProfileFormPage = () => {
 			setInitialEmail(email);
 			setIsDirty(false);
 		}
-	}, [updateUser, isErrorUpdating, isSuccesUpdating]);
+	}, [updateUser, isErrorUpdating, isSuccesUpdating, name, email]);
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
@@ -59,7 +60,7 @@ export const ProfileFormPage = () => {
 		await updateUser({ email, password, name });
 	};
 
-	if (isLoading) return <p>Загрузка данных...</p>;
+	if (isLoading) return <Preloader />;
 
 	return (
 		<form className={styles.container} onSubmit={handleSubmit}>

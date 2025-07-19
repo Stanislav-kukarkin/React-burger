@@ -1,0 +1,88 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+	width: 640px;
+	margin: 0 auto;
+}
+
+.isPage {
+	margin: 120px auto 0;
+}
+
+.header {
+	margin: 0;
+	line-height: 1.15;
+	text-align: center;
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+}
+
+.name {
+	margin-bottom: 12px;
+	font-weight: 700;
+	font-size: 24px;
+	line-height: 1.25;
+}
+
+.ingredients {
+	display: flex;
+	flex-direction: column;
+	margin-top: 60px;
+}
+
+.ingredients h4 {
+	margin: 0 0 24px;
+	font-weight: 700;
+	font-size: 24px;
+	line-height: 1.25;
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	height: 310px;
+	margin: 0;
+	padding: 0 24px 0 0;
+	overflow: auto;
+}
+
+.itemContainer {
+	--size: 64px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	height: 64px;
+}
+
+.ingredientImg {
+	width: 64px;
+}
+
+.ingredientName,
+.ingredientCost {
+	width: 100%;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.ingredientCost,
+.total {
+	display: flex;
+	justify-content: end;
+	align-items: center;
+	gap: 8px;
+}
+
+.footer {
+	display: flex;
+	justify-content: space-between;
+}
+
+.date {
+	color: var(--text-inactive-color);
+}

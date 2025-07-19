@@ -1,0 +1,43 @@
+.imgWrapper {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: var(--size);
+	height: var(--size);
+	overflow: hidden;
+	border-radius: 50%;
+}
+
+.imgWrapper::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	z-index: -1;
+	background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
+	border-radius: 50%;
+}
+
+.img {
+	width: calc(var(--size) - 2px);
+	height: calc(var(--size) - 2px);
+	background: #131316;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.imgWrapper:not(:first-child) {
+	margin-left: calc(var(--overlap) * -1);
+}
+
+.lastImgWrapper img {
+	opacity: 0.6;
+}
+
+.overlayText {
+	position: absolute;
+	color: white;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 1;
+}

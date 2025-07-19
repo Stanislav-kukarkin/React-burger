@@ -26,9 +26,14 @@ export function LoginPage() {
 		setIsPasswordVisible((prev) => !prev);
 	}, []);
 
-	const handleNavigate = useCallback((route: string) => {
-		navigate(route);
-	}, []);
+	const handleNavigate = useCallback(
+		(route: string) => {
+			navigate(route);
+		},
+		[navigate]
+	);
+
+	const from = location.state?.from?.pathname || '/';
 
 	useEffect(() => {
 		if (isError) {
@@ -37,10 +42,9 @@ export function LoginPage() {
 		}
 
 		if (isSuccess) {
-			const from = location.state?.from?.pathname || '/';
 			navigate(from);
 		}
-	}, [isSuccess, isError, navigate]);
+	}, [isSuccess, isError, navigate, from]);
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();

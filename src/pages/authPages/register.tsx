@@ -25,9 +25,12 @@ export function RegisterPage() {
 		setIsPasswordVisible((prev) => !prev);
 	}, []);
 
-	const handleNavigate = useCallback((route: string) => {
-		navigate(route);
-	}, []);
+	const handleNavigate = useCallback(
+		(route: string) => {
+			navigate(route);
+		},
+		[navigate]
+	);
 
 	useEffect(() => {
 		if (isError) {

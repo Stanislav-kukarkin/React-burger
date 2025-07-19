@@ -1,14 +1,21 @@
-import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import {
+	NavLink,
+	Route,
+	Routes,
+	useMatch,
+	useNavigate,
+} from 'react-router-dom';
 import { ProfileFormPage } from './profile-form-page/profile-form';
 import styles from './profile.module.css';
 import { useLogoutMutation } from '@/services/api/auth-api';
 import { useEffect } from 'react';
-import { NotFoundPage } from '../notFound/not-found';
 import { clearTokens } from '@/utils/token-utils';
+import { HistoryPage } from './history-page/history-page';
 
 export const ProfilePage = () => {
 	const navigate = useNavigate();
 	const [logout, { isSuccess, isLoading, isError }] = useLogoutMutation();
+	const isOrdersPage = useMatch('/profile/orders');
 
 	useEffect(() => {
 		if (isError) {
@@ -62,13 +69,15 @@ export const ProfilePage = () => {
 				</ul>
 
 				<span className={styles.left_side_description}>
-					В этом разделе вы можете изменить свои персональные данные
+					{isOrdersPage
+						? 'В этом разделе вы можете просмотреть свою историю заказов'
+						: 'В этом разделе вы можете изменить свои персональные данные'}
 				</span>
 			</div>
 
 			<Routes>
 				<Route index element={<ProfileFormPage />} />
-				<Route path='orders' element={<NotFoundPage />} />
+				<Route path='orders' element={<HistoryPage />} />
 			</Routes>
 		</div>
 	);

@@ -1,0 +1,22 @@
+.container {
+	display: flex;
+	justify-content: space-between;
+	gap: 36px;
+	width: 580px;
+}
+
+.ready,
+.inProgress {
+	width: 50%;
+}
+
+.list {
+	height: 130px;
+	margin: 0;
+	padding: 0;
+	columns: 2;
+}
+
+.success {
+	color: var(--colors-interface-success);
+}

@@ -53,7 +53,7 @@ export const BurgerConstructorFooter = (): React.JSX.Element => {
 		} catch (error) {
 			console.error('Не удалось оформить заказ. Попробуйте позже.');
 		}
-	}, [bun, ingredients, createOrder, navigate]);
+	}, [bun, ingredients, createOrder, navigate, dispatch]);
 
 	const finalPrice = useMemo(() => {
 		return [...(bun ? [bun, bun] : []), ...ingredients].reduce(

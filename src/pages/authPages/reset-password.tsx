@@ -14,8 +14,6 @@ export function ResetPasswordPage() {
 		token: '',
 		password: '',
 	});
-	// const [password, setPassword] = useState('');
-	// const [token, setToken] = useState('');
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 	const [resetPassword, { isSuccess, isLoading, isError }] =

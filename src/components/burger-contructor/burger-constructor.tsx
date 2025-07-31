@@ -71,6 +71,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 		<section className={`${styles.burger_constructor} mt-25`}>
 			<ul className={`${styles.burger_constructor_list} pl-4 pr-4`}>
 				<li
+					data-cy='constructor-bun-zone'
 					ref={dropBunTop}
 					className={`${styles.constructor_bun_item} ${isBunDragging ? styles.dropzone_active : ''} pl-8`}>
 					{bun ? (
@@ -86,6 +87,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 				</li>
 
 				<li
+					data-cy='constructor-main-zone'
 					ref={dropMiddle}
 					className={`${styles.burger_main_list} ${isMainDragging ? styles.dropzone_active : ''} ${ingredients.length ? '' : 'pl-8'}`}>
 					{ingredients.length ? (
@@ -104,6 +106,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
 				</li>
 
 				<li
+					data-cy='constructor-bun-zone'
 					ref={dropBunBottom}
 					className={`${styles.constructor_bun_item} ${isBunDragging ? styles.dropzone_active : ''} pl-8`}>
 					{bun ? (

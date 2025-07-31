@@ -1,37 +1,38 @@
-/// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+import { Selectors } from './selectors';
+
+Cypress.Commands.add('getBunIngredient', () => {
+	return cy.get(Selectors.ingredients.bun.ingredient);
+});
+
+Cypress.Commands.add('getMainIngredient', () => {
+	return cy.get(Selectors.ingredients.main.ingredient);
+});
+
+Cypress.Commands.add('getSauceIngredient', () => {
+	return cy.get(Selectors.ingredients.sauce.ingredient);
+});
+
+Cypress.Commands.add('getBunZone', () => {
+	return cy.get(Selectors.dropZones.bun);
+});
+
+Cypress.Commands.add('getMainZone', () => {
+	return cy.get(Selectors.dropZones.main);
+});
+
+Cypress.Commands.add('getIngredientInBunZone', () => {
+	return cy.get(Selectors.ingredients.bun.constructorIngredient);
+});
+
+Cypress.Commands.add('getIngredientInMainZone', () => {
+	return cy.get(Selectors.ingredients.main.constructorIngredient);
+});
+
+Cypress.Commands.add('getModal', () => {
+	return cy.get(Selectors.modal.modal);
+});
+
+Cypress.Commands.add('openIngredientModal', (ingredientType) => {
+	cy.get(`[data-cy="ingredient-item-${ingredientType}"]`).first().click();
+	cy.get(Selectors.modal.modal).should('be.visible');
+});

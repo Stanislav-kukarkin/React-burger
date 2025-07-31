@@ -49,6 +49,7 @@ export const BurgerIngredientItem = ({
 	return (
 		<div
 			role='button'
+			data-cy={`ingredient-item-${item.type.toLowerCase()}`}
 			tabIndex={0}
 			ref={dragRef}
 			className={`${styles.ingredientItem} `}

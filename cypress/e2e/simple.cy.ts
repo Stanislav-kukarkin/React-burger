@@ -19,6 +19,13 @@ describe('template spec', () => {
 		cy.visit('/');
 	});
 
+	afterEach(() => {
+		cy.window().then((win) => {
+			win.localStorage.removeItem('refreshToken');
+			win.localStorage.removeItem('accessToken');
+		});
+	});
+
 	it('should load ingredients and display them', () => {
 		cy.wait('@getIngredients');
 

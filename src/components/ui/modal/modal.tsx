@@ -38,6 +38,7 @@ export const Modal = ({
 	return (
 		<div
 			role='button'
+			data-cy='modal-overlay'
 			tabIndex={0}
 			className={styles.overlay}
 			onClick={onClose}
@@ -48,6 +49,7 @@ export const Modal = ({
 			}}>
 			<div
 				role='button'
+				data-cy='modal'
 				tabIndex={0}
 				className={styles.modal}
 				onClick={(e) => e.stopPropagation()}
@@ -56,13 +58,21 @@ export const Modal = ({
 						e.stopPropagation();
 					}
 				}}>
-				<div className={styles.header}>
+				<div data-cy='modal-header' className={styles.header}>
 					<div>{header}</div>
-					<CloseIcon type='primary' onClick={onClose} />
+					<div data-cy='modal-close-button'>
+						<CloseIcon type='primary' onClick={onClose} />
+					</div>
 				</div>
 
-				<div className={styles.content}>{children}</div>
-				{footer && <div className={styles.footer}>{footer}</div>}
+				<div data-cy='modal-content' className={styles.content}>
+					{children}
+				</div>
+				{footer && (
+					<div data-cy='modal-footer' className={styles.footer}>
+						{footer}
+					</div>
+				)}
 			</div>
 		</div>
 	);

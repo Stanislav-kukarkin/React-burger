@@ -52,6 +52,7 @@ export const BurgerConstructorItem = ({
 
 	return (
 		<div
+			data-cy={`constructor-item-${item.type.toLowerCase()}`}
 			ref={ref}
 			style={{ opacity: isDragging ? 0.5 : 1 }}
 			className={moveItem ? `${styles.constructor_main_item}` : ''}>
